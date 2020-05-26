@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Consulta CEP</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        font-family: SEGOE UI;
+      }
+
+      body,
+      div {
+        display: flex;
+        flex-direction: column;
+        margin-top: 15px;
+        align-items: center;
+      }
+
+      #input-cep {
+        height: 50px;
+        width: 300px;
+        padding: 5px;
+        padding-left: 15px;
+        margin-bottom: 15px;
+        border: none;
+        background: rgb(200, 255, 200);
+        border-radius: 15px;
+      }
+
+      #pesquisar-btn {
+        height: 50px;
+        width: 300px;
+        border: none;
+        border-radius: 15px;
+        background: lightgreen;
+        color: darkgreen;
+        transition: 1s;
+      }
+
+      #pesquisar-btn:hover {
+        color: white;
+        background: rgb(91, 177, 91);
+      }
+
+      #resultado {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Consulta de CEP</h1>
+      <input
+        id="input-cep"
+        type="number"
+        title="Insira o CEP a ser consultado"
+        placeholder="Digite o número do CEP..."
+      />
+      <button id="pesquisar-btn" onclick="consultarCep()">Buscar CEP</button>
+    </div>
+    <div id="resultado"></div>
+
+    <script>
+      window.addEventListener('load', start);
+
+      const inputCep = document.getElementById('input-cep');
+      const divResultado = document.getElementById('resultado');
+
+      function start() {
+        inputCep.focus();
+        window.addEventListener('keyup', handleTyping);
+      }
+
+      function handleTyping(event) {
+        if (event.key == 'Enter') {
+          consultarCep();
+        }
+      }
+
+      function consultarCep() {
+        fetch(`https://viacep.com.br/ws/${inputCep.value}/json/`)
+          .then((response) => response.json())
+          .then((data) => resposta(data));
+      }
+
+      function resposta(cep) {
+        const mensagem = `
+          <p><strong>CEP:</strong> ${cep.cep}</p>
+          <p><strong>Logradouro:</strong> ${cep.logradouro}</p>
+          <p><strong>Bairro:</strong> ${cep.bairro}</p>
+          <p><strong>UF:</strong> ${cep.uf}</p>
+        `;
+        var span = document.createElement('span');
+        span.innerHTML = mensagem;
+        divResultado.appendChild(span);
+      }
+    </script>
+  </body>
+</html>
